@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  mc-server:
+    build: .
+    ports:
+      - "25565:25565"  # Порт Minecraft
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./data:/server  # Сохраняем данные сервера
