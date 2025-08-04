@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0A5C36">
     <title>Исламские напоминания</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="icon-192x192.png">
     <style>
         :root {
             --primary: #0A5C36;
@@ -1110,13 +1110,10 @@
         // Установка Service Worker
         function setupServiceWorker() {
             if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('sw.js').then(
-                        registration => {
-                            console.log('ServiceWorker registration successful');
-                        },
-                        err => {
-                            console.log('ServiceWorker registration failed: ', err);
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker зарегистрирован');
                         }
                     );
                 });
