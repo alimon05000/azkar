@@ -1,11 +1,10 @@
-const CACHE_NAME = 'islamic-reminders-v1';
+const CACHE_NAME = 'islamic-reminders-v2';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/styles.css',
-  '/app.js',
-  '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png'
+  '/islamic-reminders/',
+  '/islamic-reminders/index.html',
+  '/islamic-reminders/manifest.json',
+  '/islamic-reminders/icons/icon-192x192.png',
+  '/islamic-reminders/icons/icon-512x512.png'
 ];
 
 self.addEventListener('install', event => {
@@ -18,15 +17,19 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        if (response) {
-          return response;
-        }
-        return fetch(event.request);
-      })
-  );
+  // Fix for base path in GitHub Pages
+  let requestUrl = event.request.url;
+  if (requestUrl.includes('/islamic-reminders/')) {
+    event.respondWith(
+      caches.match(event.request)
+        .then(response => {
+          if (response) {
+            return response;
+          }
+          return fetch(event.request);
+        })
+    );
+  }
 });
 
 self.addEventListener('activate', event => {
@@ -49,12 +52,12 @@ self.addEventListener('notificationclick', event => {
   event.waitUntil(
     clients.matchAll({ type: 'window' }).then(clientList => {
       for (const client of clientList) {
-        if (client.url === '/' && 'focus' in client) {
+        if (client.url.includes('/islamic-reminders/') && 'focus' in client) {
           return client.focus();
         }
       }
       if (clients.openWindow) {
-        return clients.openWindow('/');
+        return clients.openWindow('/islamic-reminders/');
       }
     })
   );
