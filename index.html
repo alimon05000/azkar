@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ru" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0A5C36">
+    <title>Исламские напоминания</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <style>
+        :root {
+            --primary: #0A5C36;
+            --secondary: #F0E6D2;
+            --accent: #C19A6B;
+            --text: #2C2C2C;
+            --light: #FFFFFF;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        body {
+            background-color: var(--secondary);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            width: 100%;
+            flex: 1;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: var(--light);
+            padding: 20px;
+            text-align: center;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.05)" d="M0,0 L100,0 L100,100 Q50,80 0,100 Z"></path></svg>');
+            background-size: 100% 100%;
+            pointer-events: none;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .reminder-card {
+            background-color: var(--light);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+            border-left: 5px solid var(--accent);
+        }
+        
+        .reminder-card:active {
+            transform: scale(0.98);
+        }
+        
+        .reminder-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .reminder-text {
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+        
+        .reminder-source {
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-style: italic;
+            text-align: left;
+        }
+        
+        .reminder-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--light);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-icon {
+            margin-right: 8px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text);
+            opacity: 0.7;
+        }
+        
+        .empty-state img {
+            width: 100px;
+            opacity: 0.5;
+            margin-bottom: 20px;
+        }
+        
+        .tab-bar {
+            display: flex;
+            background-color: var(--light);
+            border-radius: 50px;
+            padding: 5px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            background-color: var(--primary);
+            color: var(--light);
+        }
+        
+        .floating-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--primary);
+            color: var(--light);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 20px rgba(10, 92, 54, 0.3);
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        
+        .floating-btn:active {
+            transform: translateX(-50%) scale(0.95);
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .reminder-card {
+                padding: 15px;
+            }
+        }
+        
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .reminder-card {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        /* Исламские узоры */
+        .islamic-pattern {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+        
+        .pattern-1 {
+            top: -50px;
+            left: -50px;
+            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+        }
+        
+        .pattern-2 {
+            bottom: -50px;
+            right: -50px;
+            background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="islamic-pattern pattern-1"></div>
+        <div class="islamic-pattern pattern-2"></div>
+        <h1>Исламские напоминания</h1>
+        <p class="subtitle">Защита от наущений шайтана</p>
+    </header>
+    
+    <div class="container">
+        <div class="tab-bar">
+            <div class="tab active">Все</div>
+            <div class="tab">Утро/Вечер</div>
+            <div class="tab">Намаз</div>
+        </div>
+        
+        <div id="reminders-list">
+            <!-- Напоминания будут загружены здесь -->
+        </div>
+        
+        <div id="empty-state" class="empty-state" style="display: none;">
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230A5C36'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.39-2.1 1.39-1.6 0-2.23-.72-2.32-1.64H8.04c.1 1.7 1.36 2.66 2.86 2.97V19h2.34v-1.67c1.52-.29 2.72-1.16 2.73-2.77-.01-2.2-1.9-2.96-3.66-3.42z'/></svg>" alt="Пусто">
+            <h3>Нет напоминаний</h3>
+            <p>Добавьте напоминания из достоверной сунны</p>
+        </div>
+    </div>
+    
+    <div class="floating-btn" id="add-reminder-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+    </div>
+    
+    <script>
+        // Данные напоминаний
+        const reminders = [
+            {
+                id: 1,
+                title: "Утренние и вечерние зикры",
+                text: "Читать: 'А'узу би-Калими-Лляхи-т-таммати мин шарри ма халяк' (Я ищу защиты в совершенных Словах Аллаха от зла того, что Он создал) - 3 раза утром и вечером",
+                source: "Аль-Бухари 4/95, Муслим 4/2080",
+                category: "Утро/Вечер",
+                times: ["08:00", "18:00"]
+            },
+            {
+                id: 2,
+                title: "Перед сном",
+                text: "Читать: 'Аллахумма би-смика амуту ва ахья' (О Аллах, с Твоим именем я умираю и оживаю)",
+                source: "Аль-Бухари 6324",
+                category: "Утро/Вечер",
+                times: ["22:00"]
+            },
+            {
+                id: 3,
+                title: "После азана",
+                text: "Произносить то же, что говорит муэдзин, а после сказать: 'Аллахумма Рабба хазихи-д-да'вати-т-таммати ва-с-саляти-ль-каима, ати Мухаммадан аль-васийата ва-ль-фадылята ва-б'асху макаман махмудан аллязи ва'адтаху'",
+                source: "Аль-Бухари 614",
+                category: "Намаз",
+                times: []
+            },
+            {
+                id: 4,
+                title: "При выходе из дома",
+                text: "Говорить: 'Бисми-Лляхи, таваккальту 'аля-Лляхи, ва ля хауля ва ля куввата илля би-Ллях'",
+                source: "Абу Дауд 5095, ат-Тирмизи 3426",
+                category: "Утро/Вечер",
+                times: []
+            },
+            {
+                id: 5,
+                title: "После обязательной молитвы",
+                text: "Читать: 'Астагфиру-Ллах' (3 раза), 'Аллахумма анта-с-Саляму ва минка-с-Салям, табаракта йа за-ль-Джаляли ва-ль-Икрам'",
+                source: "Муслим 1/414",
+                category: "Намаз",
+                times: []
+            }
+        ];
+        
+        // DOM элементы
+        const remindersList = document.getElementById('reminders-list');
+        const emptyState = document.getElementById('empty-state');
+        const tabs = document.querySelectorAll('.tab');
+        const addReminderBtn = document.getElementById('add-reminder-btn');
+        
+        // Текущая активная категория
+        let activeCategory = 'Все';
+        
+        // Инициализация приложения
+        function init() {
+            renderReminders();
+            setupTabs();
+            setupServiceWorker();
+            checkEmptyState();
+        }
+        
+        // Рендеринг напоминаний
+        function renderReminders() {
+            remindersList.innerHTML = '';
+            
+            const filteredReminders = activeCategory === 'Все' 
+                ? reminders 
+                : reminders.filter(r => r.category === activeCategory);
+            
+            if (filteredReminders.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            filteredReminders.forEach(reminder => {
+                const reminderElement = document.createElement('div');
+                reminderElement.className = 'reminder-card';
+                reminderElement.innerHTML = `
+                    <div class="reminder-title">${reminder.title}</div>
+                    <div class="reminder-text">${reminder.text}</div>
+                    <div class="reminder-source">${reminder.source}</div>
+                    <div class="reminder-actions">
+                        <button class="btn btn-outline" onclick="scheduleReminder(${reminder.id})">
+                            <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            Напомнить
+                        </button>
+                        <button class="btn btn-primary" onclick="addToCalendar(${reminder.id})">
+                            <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            В календарь
+                        </button>
+                    </div>
+                `;
+                remindersList.appendChild(reminderElement);
+            });
+        }
+        
+        // Настройка табов
+        function setupTabs() {
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    activeCategory = tab.textContent;
+                    renderReminders();
+                });
+            });
+        }
+        
+        // Проверка пустого состояния
+        function checkEmptyState() {
+            if (reminders.length === 0) {
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+            }
+        }
+        
+        // Запланировать напоминание
+        function scheduleReminder(id) {
+            const reminder = reminders.find(r => r.id === id);
+            if (!reminder) return;
+            
+            if ('Notification' in window && Notification.permission !== 'denied') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        // Здесь можно добавить логику для планирования уведомлений
+                        alert(`Напоминание "${reminder.title}" будет показано в установленное время`);
+                    }
+                });
+            } else {
+                alert(`Напоминание "${reminder.title}" будет показано в установленное время`);
+            }
+        }
+        
+        // Добавить в календарь
+        function addToCalendar(id) {
+            const reminder = reminders.find(r => r.id === id);
+            if (!reminder) return;
+            
+            // Для iOS можно использовать эту схему
+            const text = encodeURIComponent(`${reminder.title}\n\n${reminder.text}\n\nИсточник: ${reminder.source}`);
+            const date = new Date();
+            const endDate = new Date(date.getTime() + 30 * 60000); // +30 минут
+            
+            const url = `webcal://p30-calendars.icloud.com/publish/2/${text}?title=Исламское напоминание&st=${formatDateForCalendar(date)}&et=${formatDateForCalendar(endDate)}&location=Мусульманские практики`;
+            
+            window.open(url, '_blank');
+        }
+        
+        function formatDateForCalendar(date) {
+            return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        }
+        
+        // Установка Service Worker
+        function setupServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('sw.js').then(
+                        registration => {
+                            console.log('ServiceWorker registration successful');
+                        },
+                        err => {
+                            console.log('ServiceWorker registration failed: ', err);
+                        }
+                    );
+                });
+            }
+        }
+        
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', init);
+        
+        // Глобальные функции для кнопок
+        window.scheduleReminder = scheduleReminder;
+        window.addToCalendar = addToCalendar;
+    </script>
+</body>
+</html>
