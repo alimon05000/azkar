@@ -2,7 +2,7 @@
   "name": "Исламские напоминания",
   "short_name": "Напоминания",
   "description": "Приложение с напоминаниями из достоверной сунны",
-  "start_url": "/",
+  "start_url": "/islamic-reminders/",
   "display": "standalone",
   "background_color": "#0A5C36",
   "theme_color": "#0A5C36",
