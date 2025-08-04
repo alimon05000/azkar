@@ -1,9 +1,15 @@
-const CACHE_NAME = 'islamic-reminders-v2';
+const CACHE_NAME = 'islamic-reminders-v3';
 const urlsToCache = [
   '/islamic-reminders/',
   '/islamic-reminders/index.html',
   '/islamic-reminders/manifest.json',
+  '/islamic-reminders/icons/icon-72x72.png',
+  '/islamic-reminders/icons/icon-96x96.png',
+  '/islamic-reminders/icons/icon-128x128.png',
+  '/islamic-reminders/icons/icon-144x144.png',
+  '/islamic-reminders/icons/icon-152x152.png',
   '/islamic-reminders/icons/icon-192x192.png',
+  '/islamic-reminders/icons/icon-384x384.png',
   '/islamic-reminders/icons/icon-512x512.png'
 ];
 
@@ -17,19 +23,25 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
-  // Fix for base path in GitHub Pages
-  let requestUrl = event.request.url;
-  if (requestUrl.includes('/islamic-reminders/')) {
-    event.respondWith(
-      caches.match(event.request)
-        .then(response => {
-          if (response) {
-            return response;
-          }
-          return fetch(event.request);
-        })
-    );
-  }
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        // Возвращаем кэшированный файл, если он есть
+        if (response) {
+          return response;
+        }
+        
+        // Для всех запросов к нашему PWA используем сеть с fallback на index.html
+        if (event.request.mode === 'navigate' || 
+            (event.request.method === 'GET' && 
+             event.request.headers.get('accept').includes('text/html'))) {
+          return caches.match('/islamic-reminders/index.html');
+        }
+        
+        // Для остальных запросов используем сеть
+        return fetch(event.request);
+      })
+  );
 });
 
 self.addEventListener('activate', event => {
