@@ -14,6 +14,46 @@
             --accent: #C19A6B;
             --text: #2C2C2C;
             --light: #FFFFFF;
+            --dark: #1A1A1A;
+            --card-bg: #FFFFFF;
+            --header-bg: #0A5C36;
+            --pattern-opacity: 0.05;
+        }
+        
+        [data-theme="dark"] {
+            --primary: #2E7D32;
+            --secondary: #121212;
+            --accent: #FFD54F;
+            --text: #E0E0E0;
+            --light: #1E1E1E;
+            --dark: #121212;
+            --card-bg: #1E1E1E;
+            --header-bg: #1A1A1A;
+            --pattern-opacity: 0.1;
+        }
+        
+        [data-theme="gold"] {
+            --primary: #8C6A3D;
+            --secondary: #F5F0E6;
+            --accent: #D4AF37;
+            --text: #3E3E3E;
+            --light: #FFFFFF;
+            --dark: #8C6A3D;
+            --card-bg: #FFFFFF;
+            --header-bg: #8C6A3D;
+            --pattern-opacity: 0.08;
+        }
+        
+        [data-theme="blue"] {
+            --primary: #1565C0;
+            --secondary: #E3F2FD;
+            --accent: #42A5F5;
+            --text: #2C2C2C;
+            --light: #FFFFFF;
+            --dark: #0D47A1;
+            --card-bg: #FFFFFF;
+            --header-bg: #1565C0;
+            --pattern-opacity: 0.06;
         }
         
         * {
@@ -29,6 +69,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         
         .container {
@@ -40,7 +81,7 @@
         }
         
         header {
-            background-color: var(--primary);
+            background-color: var(--header-bg);
             color: var(--light);
             padding: 20px;
             text-align: center;
@@ -57,7 +98,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.05)" d="M0,0 L100,0 L100,100 Q50,80 0,100 Z"></path></svg>');
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.1)" d="M0,0 L100,0 L100,100 Q50,80 0,100 Z"></path></svg>');
             background-size: 100% 100%;
             pointer-events: none;
         }
@@ -78,12 +119,12 @@
         }
         
         .reminder-card {
-            background-color: var(--light);
+            background-color: var(--card-bg);
             border-radius: 16px;
             padding: 20px;
             margin: 20px 0;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             border-left: 5px solid var(--accent);
         }
         
@@ -102,6 +143,21 @@
             font-size: 1rem;
             line-height: 1.5;
             margin-bottom: 15px;
+        }
+        
+        .arabic-text {
+            font-size: 1.4rem;
+            text-align: right;
+            line-height: 2;
+            margin: 10px 0;
+            color: var(--primary);
+            font-family: 'Traditional Arabic', 'Arial', sans-serif;
+        }
+        
+        .transcription {
+            font-style: italic;
+            opacity: 0.8;
+            margin-bottom: 5px;
         }
         
         .reminder-source {
@@ -160,7 +216,7 @@
         
         .tab-bar {
             display: flex;
-            background-color: var(--light);
+            background-color: var(--card-bg);
             border-radius: 50px;
             padding: 5px;
             margin: 20px 0;
@@ -205,6 +261,69 @@
             transform: translateX(-50%) scale(0.95);
         }
         
+        .theme-switcher {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: var(--card-bg);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            z-index: 100;
+        }
+        
+        .theme-menu {
+            position: fixed;
+            top: 70px;
+            left: 20px;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .theme-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.2s ease;
+        }
+        
+        .theme-option:hover {
+            transform: scale(1.1);
+        }
+        
+        .theme-option.active {
+            border-color: var(--text);
+        }
+        
+        .theme-default {
+            background: linear-gradient(135deg, #0A5C36 50%, #F0E6D2 50%);
+        }
+        
+        .theme-dark {
+            background: linear-gradient(135deg, #1A1A1A 50%, #2E7D32 50%);
+        }
+        
+        .theme-gold {
+            background: linear-gradient(135deg, #8C6A3D 50%, #F5F0E6 50%);
+        }
+        
+        .theme-blue {
+            background: linear-gradient(135deg, #1565C0 50%, #E3F2FD 50%);
+        }
+        
         @media (max-width: 480px) {
             .container {
                 padding: 15px;
@@ -212,6 +331,18 @@
             
             .reminder-card {
                 padding: 15px;
+            }
+            
+            .theme-switcher {
+                top: 15px;
+                left: 15px;
+                width: 35px;
+                height: 35px;
+            }
+            
+            .theme-menu {
+                top: 60px;
+                left: 15px;
             }
         }
         
@@ -230,7 +361,7 @@
             position: absolute;
             width: 200px;
             height: 200px;
-            opacity: 0.05;
+            opacity: var(--pattern-opacity);
             pointer-events: none;
         }
         
@@ -255,11 +386,33 @@
         <p class="subtitle">Защита от наущений шайтана</p>
     </header>
     
+    <div class="theme-switcher" id="theme-switcher">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    </div>
+    
+    <div class="theme-menu" id="theme-menu">
+        <div class="theme-option theme-default active" data-theme="default"></div>
+        <div class="theme-option theme-dark" data-theme="dark"></div>
+        <div class="theme-option theme-gold" data-theme="gold"></div>
+        <div class="theme-option theme-blue" data-theme="blue"></div>
+    </div>
+    
     <div class="container">
         <div class="tab-bar">
-            <div class="tab active">Все</div>
-            <div class="tab">Утро/Вечер</div>
-            <div class="tab">Намаз</div>
+            <div class="tab active" data-category="all">Все</div>
+            <div class="tab" data-category="morning">Утренние</div>
+            <div class="tab" data-category="evening">Вечерние</div>
+            <div class="tab" data-category="prayer">После намаза</div>
         </div>
         
         <div id="reminders-list">
@@ -285,42 +438,82 @@
         const reminders = [
             {
                 id: 1,
-                title: "Утренние и вечерние зикры",
-                text: "Читать: 'А'узу би-Калими-Лляхи-т-таммати мин шарри ма халяк' (Я ищу защиты в совершенных Словах Аллаха от зла того, что Он создал) - 3 раза утром и вечером",
-                source: "Аль-Бухари 4/95, Муслим 4/2080",
-                category: "Утро/Вечер",
-                times: ["08:00", "18:00"]
+                title: "Утренний зикр 1",
+                arabic: "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ",
+                transcription: "А'узу би-Лляхи мин аш-шайтани р-раджим",
+                text: "Читать после пробуждения: 'Прибегаю к защите Аллаха от проклятого шайтана'",
+                source: "Коран 16:98",
+                category: "morning",
+                times: ["06:00"]
             },
             {
                 id: 2,
-                title: "Перед сном",
-                text: "Читать: 'Аллахумма би-смика амуту ва ахья' (О Аллах, с Твоим именем я умираю и оживаю)",
-                source: "Аль-Бухари 6324",
-                category: "Утро/Вечер",
-                times: ["22:00"]
+                title: "Утренний зикр 2",
+                arabic: "اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ النُّشُورُ",
+                transcription: "Аллахумма би-кя асбахна, ва би-кя амсайна, ва би-кя нахья, ва би-кя намуту, ва иляйкя-н-нушур",
+                text: "Утром: 'О Аллах, с Тобой мы провели этот вечер, и с Тобой встречаем утро, с Тобой мы живём и с Тобой умираем, и к Тебе воскресение!'",
+                source: "Ат-Тирмизи 3391",
+                category: "morning",
+                times: ["06:30"]
             },
             {
                 id: 3,
-                title: "После азана",
-                text: "Произносить то же, что говорит муэдзин, а после сказать: 'Аллахумма Рабба хазихи-д-да'вати-т-таммати ва-с-саляти-ль-каима, ати Мухаммадан аль-васийата ва-ль-фадылята ва-б'асху макаман махмудан аллязи ва'адтаху'",
-                source: "Аль-Бухари 614",
-                category: "Намаз",
-                times: []
+                title: "Вечерний зикр 1",
+                arabic: "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
+                transcription: "А'узу би-кялимати-Лляхи-т-таммати мин шарри ма халяк",
+                text: "Вечером: 'Я ищу защиты в совершенных Словах Аллаха от зла того, что Он создал' (3 раза)",
+                source: "Муслим 4/2080",
+                category: "evening",
+                times: ["18:00"]
             },
             {
                 id: 4,
-                title: "При выходе из дома",
-                text: "Говорить: 'Бисми-Лляхи, таваккальту 'аля-Лляхи, ва ля хауля ва ля куввата илля би-Ллях'",
-                source: "Абу Дауд 5095, ат-Тирмизи 3426",
-                category: "Утро/Вечер",
-                times: []
+                title: "Вечерний зикр 2",
+                arabic: "اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ الْمَصِيرُ",
+                transcription: "Аллахумма би-кя амсайна, ва би-кя асбахна, ва би-кя нахья, ва би-кя намуту, ва иляйкя-ль-масыр",
+                text: "Вечером: 'О Аллах, с Тобой мы провели этот вечер, и с Тобой встречаем утро, с Тобой мы живём и с Тобой умираем, и к Тебе возвращение!'",
+                source: "Ат-Тирмизи 3391",
+                category: "evening",
+                times: ["18:30"]
             },
             {
                 id: 5,
-                title: "После обязательной молитвы",
-                text: "Читать: 'Астагфиру-Ллах' (3 раза), 'Аллахумма анта-с-Саляму ва минка-с-Салям, табаракта йа за-ль-Джаляли ва-ль-Икрам'",
-                source: "Муслим 1/414",
-                category: "Намаз",
+                title: "После утреннего намаза",
+                arabic: "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+                transcription: "Ля иляха илля-Ллаху вахдаху ля шарика ляху, ляху-ль-мульку ва ляху-ль-хамду ва хува 'аля кулли шайин кадир",
+                text: "После фаджра: 'Нет божества, кроме одного лишь Аллаха, у Которого нет сотоварища. Ему принадлежит владычество, Ему хвала, Он всё может!' (10 раз)",
+                source: "Абу Дауд 5077",
+                category: "prayer",
+                times: []
+            },
+            {
+                id: 6,
+                title: "После всех намазов",
+                arabic: "سُبْحَانَ اللَّهِ، وَالْحَمْدُ لِلَّهِ، وَاللَّهُ أَكْبَرُ",
+                transcription: "Субхана-Ллахи, ва-ль-хамду ли-Лляхи, ва Аллаху акбар",
+                text: "После каждого намаза: 'Слава Аллаху, хвала Аллаху, Аллах велик' (по 33 раза каждое)",
+                source: "Муслим 1/418",
+                category: "prayer",
+                times: []
+            },
+            {
+                id: 7,
+                title: "Перед сном",
+                arabic: "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
+                transcription: "Би-смикя Аллахумма амуту ва ахья",
+                text: "Перед сном: 'О Аллах, с Твоим именем я умираю и оживаю'",
+                source: "Аль-Бухари 6324",
+                category: "evening",
+                times: ["22:00"]
+            },
+            {
+                id: 8,
+                title: "При выходе из дома",
+                arabic: "بِسْمِ اللَّهِ، تَوَكَّلْتُ عَلَى اللَّهِ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",
+                transcription: "Би-сми-Лляхи, таваккальту 'аля-Лляхи, ва ля хауля ва ля куввата илля би-Ллях",
+                text: "При выходе из дома: 'С именем Аллаха, уповаю на Аллаха, нет силы и мощи ни у кого, кроме Аллаха'",
+                source: "Абу Дауд 5095",
+                category: "morning",
                 times: []
             }
         ];
@@ -330,15 +523,19 @@
         const emptyState = document.getElementById('empty-state');
         const tabs = document.querySelectorAll('.tab');
         const addReminderBtn = document.getElementById('add-reminder-btn');
+        const themeSwitcher = document.getElementById('theme-switcher');
+        const themeMenu = document.getElementById('theme-menu');
+        const themeOptions = document.querySelectorAll('.theme-option');
         
         // Текущая активная категория
-        let activeCategory = 'Все';
+        let activeCategory = 'all';
         
         // Инициализация приложения
         function init() {
             renderReminders();
             setupTabs();
             setupServiceWorker();
+            setupThemeSwitcher();
             checkEmptyState();
         }
         
@@ -346,7 +543,7 @@
         function renderReminders() {
             remindersList.innerHTML = '';
             
-            const filteredReminders = activeCategory === 'Все' 
+            const filteredReminders = activeCategory === 'all' 
                 ? reminders 
                 : reminders.filter(r => r.category === activeCategory);
             
@@ -360,8 +557,18 @@
             filteredReminders.forEach(reminder => {
                 const reminderElement = document.createElement('div');
                 reminderElement.className = 'reminder-card';
+                
+                let arabicHtml = '';
+                if (reminder.arabic) {
+                    arabicHtml = `
+                        <div class="arabic-text">${reminder.arabic}</div>
+                        <div class="transcription">${reminder.transcription}</div>
+                    `;
+                }
+                
                 reminderElement.innerHTML = `
                     <div class="reminder-title">${reminder.title}</div>
+                    ${arabicHtml}
                     <div class="reminder-text">${reminder.text}</div>
                     <div class="reminder-source">${reminder.source}</div>
                     <div class="reminder-actions">
@@ -393,10 +600,42 @@
                 tab.addEventListener('click', () => {
                     tabs.forEach(t => t.classList.remove('active'));
                     tab.classList.add('active');
-                    activeCategory = tab.textContent;
+                    activeCategory = tab.dataset.category;
                     renderReminders();
                 });
             });
+        }
+        
+        // Настройка переключателя тем
+        function setupThemeSwitcher() {
+            themeSwitcher.addEventListener('click', () => {
+                themeMenu.style.display = themeMenu.style.display === 'flex' ? 'none' : 'flex';
+            });
+            
+            themeOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    const theme = option.dataset.theme;
+                    setTheme(theme);
+                    themeOptions.forEach(opt => opt.classList.remove('active'));
+                    option.classList.add('active');
+                    themeMenu.style.display = 'none';
+                });
+            });
+            
+            // Проверка сохраненной темы
+            const savedTheme = localStorage.getItem('theme') || 'default';
+            setTheme(savedTheme);
+            document.querySelector(`.theme-option[data-theme="${savedTheme}"]`).classList.add('active');
+        }
+        
+        // Установка темы
+        function setTheme(theme) {
+            if (theme === 'default') {
+                document.documentElement.removeAttribute('data-theme');
+            } else {
+                document.documentElement.setAttribute('data-theme', theme);
+            }
+            localStorage.setItem('theme', theme);
         }
         
         // Проверка пустого состояния
@@ -416,8 +655,14 @@
             if ('Notification' in window && Notification.permission !== 'denied') {
                 Notification.requestPermission().then(permission => {
                     if (permission === 'granted') {
-                        // Здесь можно добавить логику для планирования уведомлений
-                        alert(`Напоминание "${reminder.title}" будет показано в установленное время`);
+                        if (reminder.times && reminder.times.length > 0) {
+                            reminder.times.forEach(time => {
+                                scheduleNotification(reminder, time);
+                            });
+                            alert(`Напоминание "${reminder.title}" будет показано в установленное время`);
+                        } else {
+                            showNotification(reminder);
+                        }
                     }
                 });
             } else {
@@ -425,23 +670,72 @@
             }
         }
         
+        // Показать уведомление
+        function showNotification(reminder) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification(reminder.title, {
+                    body: reminder.text,
+                    icon: 'icons/icon-192x192.png'
+                });
+            }
+        }
+        
+        // Запланировать уведомление на определенное время
+        function scheduleNotification(reminder, timeStr) {
+            const [hours, minutes] = timeStr.split(':').map(Number);
+            const now = new Date();
+            const notificationTime = new Date(
+                now.getFullYear(),
+                now.getMonth(),
+                now.getDate(),
+                hours,
+                minutes,
+                0
+            );
+            
+            // Если время уже прошло сегодня, запланировать на завтра
+            if (notificationTime < now) {
+                notificationTime.setDate(notificationTime.getDate() + 1);
+            }
+            
+            const timeout = notificationTime.getTime() - now.getTime();
+            
+            setTimeout(() => {
+                showNotification(reminder);
+                // Повторять ежедневно
+                scheduleNotification(reminder, timeStr);
+            }, timeout);
+        }
+        
         // Добавить в календарь
         function addToCalendar(id) {
             const reminder = reminders.find(r => r.id === id);
             if (!reminder) return;
             
-            // Для iOS можно использовать эту схему
-            const text = encodeURIComponent(`${reminder.title}\n\n${reminder.text}\n\nИсточник: ${reminder.source}`);
+            const text = encodeURIComponent(`${reminder.title}\n\n${reminder.arabic ? reminder.arabic + '\n\n' : ''}${reminder.text}\n\nИсточник: ${reminder.source}`);
             const date = new Date();
             const endDate = new Date(date.getTime() + 30 * 60000); // +30 минут
             
-            const url = `webcal://p30-calendars.icloud.com/publish/2/${text}?title=Исламское напоминание&st=${formatDateForCalendar(date)}&et=${formatDateForCalendar(endDate)}&location=Мусульманские практики`;
+            // Для iOS
+            const iosUrl = `webcal://p30-calendars.icloud.com/publish/2/${text}?title=Исламское напоминание&st=${formatDateForCalendar(date)}&et=${formatDateForCalendar(endDate)}&location=Мусульманские практики`;
             
-            window.open(url, '_blank');
+            // Для других устройств
+            const googleUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(reminder.title)}&details=${encodeURIComponent(reminder.text)}&dates=${formatDateForGoogleCalendar(date)}/${formatDateForGoogleCalendar(endDate)}`;
+            
+            // Попробуем определить iOS
+            if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                window.open(iosUrl, '_blank');
+            } else {
+                window.open(googleUrl, '_blank');
+            }
         }
         
         function formatDateForCalendar(date) {
             return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        }
+        
+        function formatDateForGoogleCalendar(date) {
+            return date.toISOString().replace(/[-:]/g, '').replace(/\.\d+/g, '');
         }
         
         // Установка Service Worker
